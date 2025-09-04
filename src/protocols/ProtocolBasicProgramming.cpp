@@ -3,15 +3,14 @@
  * https://github.com/SteveGuidi/video-companion-media/tree/main/2021.06.09%20-%20Atari%202600%20Keyboard
 */
 
-#include "parallel_both_BasicProgramming.h"
+#include "ProtocolBasicProgramming.h"
 
-KeyColor _currentColor;
 
-static void WaitForPinState(uint8_t pin, uint8_t state) {
+static void ProtocolBasicProgramming::WaitForPinState(uint8_t pin, uint8_t state) {
   while(digitalRead(pin) != state) { }
 }
 
-void Write(uint8_t scanPin, uint8_t outputPin) {
+void ProtocolBasicProgramming::Write(uint8_t scanPin, uint8_t outputPin) {
   
   // Wait for the scanning pin transisitions before setting the corresponding
   // output pin state.  Restore the output pin to the HIGH state when completed.
@@ -28,7 +27,7 @@ void Write(uint8_t scanPin, uint8_t outputPin) {
   keyboard_action = false; // toDo should be  done in main loop
 };
 
-void SwitchColor() {
+void ProtocolBasicProgramming::SwitchColor() {
   // Wait for the scanning pin transisitions before setting the corresponding
   // output pin state.  Restore the output pin to the HIGH state when completed.
   for(uint8_t i = 0; i <= 2; ++i) { // 3 scan cycles should be enough for inc color
@@ -40,7 +39,7 @@ void SwitchColor() {
   digitalWrite(COLOR_KEY_OUTPUT_PIN, HIGH);
 };
 
-void protocol_parallel_both_BasicProgramming_setup(){
+void ProtocolBasicProgramming::setup(){
   // disable joystick port forwarding
   digitalWrite(OE_LEFT_PORT, LOW);
   digitalWrite(OE_RIGHT_PORT, LOW);
@@ -65,12 +64,12 @@ void protocol_parallel_both_BasicProgramming_setup(){
   _currentColor = KeyColor::White;
 }
 
-void protocol_parallel_both_BasicProgramming_keyUp(){
+//void protocol_parallel_both_BasicProgramming_keyUp(){
 // nothing to do here, we are using the global "keyboard_action"
 // to end the key press
-}
+//}
 
-void protocol_parallel_both_BasicProgramming_keyDown(char value){
+void ProtocolBasicProgramming::keyDown(char value){
     const KeyControllerEntry* entry = getKeyControllerEntry(value);
     if (!entry) return;
 

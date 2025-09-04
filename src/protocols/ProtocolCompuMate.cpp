@@ -20,15 +20,13 @@
     INPT5: D7 = keyboard row 2 input (0 = key pressed)
 */
 
-#include "parallel_both_CompuMate.h"
+#include "ProtocolCompuMate.h"
 
 #define RAM _BV(PD4)
 #define RST _BV(PD5)
 
 
-volatile uint8_t my_4017_counter;
-
-void protocol_parallel_both_CompuMate_setup(){
+void ProtocolCompuMate::setup() {
   // disable joystick port forwarding
   digitalWrite(OE_LEFT_PORT, LOW);
   digitalWrite(OE_RIGHT_PORT, LOW);
@@ -60,10 +58,7 @@ void protocol_parallel_both_CompuMate_setup(){
   sei();                    // globale Interrupts an
 }
 
-void protocol_parallel_both_CompuMate_keyUp(){
-  /* todo */
-}
-void protocol_parallel_both_CompuMate_keyDown(char value){
+void ProtocolCompuMate::keyDown(char value){
   uint8_t i = 0;
 
   const CompuMateKeyEntry* entry = getCompuMateKeyEntry(value);
@@ -100,7 +95,7 @@ void protocol_parallel_both_CompuMate_keyDown(char value){
 
 }
 
-ISR(PCINT2_vect) {
+void ProtocolCompuMate::pISR() {
   static bool last5 = false, last6 = false;
   uint8_t currPortD = PIND;         // Port-D-Pins einlesen
 
@@ -120,7 +115,4 @@ ISR(PCINT2_vect) {
 
   last5 = now5;
   last6 = now6;
-
-  // Interrupt-Flag für Port D löschen:
-  bitSet(PCIFR, PCIF2);
 }

@@ -1,11 +1,11 @@
-#include "parallel_both_24char.h"
+#include "Protocol24char.h"
 
-void protocol_parallel_both_24char_setup(){
+void Protocol24char::setup(){
   digitalWrite(OE_LEFT_PORT, HIGH);  // Activate left joystick forwarding via first 74HC4066
   digitalWrite(OE_RIGHT_PORT, HIGH); // Activate right joystick forwarding via second 74HC4066
 }
 
-void protocol_parallel_both_24char_keyUp(){
+void Protocol24char::keyUp(){
   // set port on RIOT bus to input. Also used on init!
   DDRD = 0b00000000;
   PORTD = 0b00000000; // floating, no pullups
@@ -13,7 +13,7 @@ void protocol_parallel_both_24char_keyUp(){
   digitalWrite(OE_RIGHT_PORT, HIGH);
 }
 
-void protocol_parallel_both_24char_keyDown(char value){
+void Protocol24char::keyDown(char value){
   // Key down for
   // 1. set both SN74HC4066 to OE off!
   // 2. set data Port to output
