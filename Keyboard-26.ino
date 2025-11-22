@@ -10,6 +10,7 @@
 #include "src/protocols/ProtocolBasicProgramming.h"
 #include "src/protocols/ProtocolCompuMate.h"
 #include "src/protocols/ProtocolAtari7800Keyboard.h"
+#include "src/protocols/ProtocolASCII.h"
 
 
 PS2Keymap_t *keymap;
@@ -19,8 +20,9 @@ static Protocol24char            protocol24char;
 static ProtocolBasicProgramming  protocolBasicProgramming;
 static ProtocolCompuMate         protocolCompuMate;
 static ProtocolAtari7800Keyboard protocolAtari7800Keyboard;
+static ProtocolASCII             protocolASCII;
 
-Protocol* protocols[] = { &protocolNone, &protocol24char, &protocolBasicProgramming, &protocolCompuMate, &protocolAtari7800Keyboard };
+Protocol* protocols[] = { &protocolNone, &protocol24char, &protocolBasicProgramming, &protocolCompuMate, &protocolAtari7800Keyboard, &protocolASCII };
 
 volatile Protocol* activeProtocol = nullptr;
 
@@ -83,13 +85,13 @@ void setup() {
   int adcValue = analogRead(DIP_A_PIN);  // Read voltage of DIP-Switch block resistor ladder (0-1023)
   uint8_t dipConfig = map_adc_value(adcValue); 
 
-  switch (dipConfig & 0b11) { // lower 2 bits of dipConfig define keyboard layout
+  switch (dipConfig & 0b01) { // lower bit of dipConfig define keyboard layout
     case 0b01: keymap = &PS2Keymap_German;      break;
-    case 0b10: keymap = &PS2Keymap_French;      break;
+//    case 0b10: keymap = &PS2Keymap_French;      break;
     default: keymap = &PS2Keymap_US;            break;
   }
 
-  uint8_t apId = (dipConfig >> 2) & 0b11;
+  uint8_t apId = (dipConfig >> 1) & 0b111;
   activeProtocol = protocols[apId];
 
   #if DEBUG
